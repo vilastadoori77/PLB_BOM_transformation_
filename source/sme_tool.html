@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLB SME Workshop — TC 2412</title>
+<style>
+  :root {
+    --navy:   #1B2A4A;
+    --teal:   #0D7A6B;
+    --white:  #FFFFFF;
+    --off:    #F8FAFC;
+    --border: #E2E8F0;
+    --g50:    #F8FAFC;
+    --g100:   #F1F5F9;
+    --g300:   #CBD5E1;
+    --g500:   #64748B;
+    --g700:   #334155;
+    --red-bg: #FEE2E2;
+    --red-fg: #991B1B;
+    --grn-bg: #D1FAE5;
+    --grn-fg: #065F46;
+    --amb-bg: #FEF3C7;
+    --amb-fg: #92400E;
+    --blue-bg:#DBEAFE;
+    --blue-fg:#1E40AF;
+    --mono:   'Consolas', monospace;
+    --sans:   'Calibri', 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--off); color: var(--navy); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── HEADER ── */
+  #header {
+    background: var(--navy);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  #header h1 { color: white; font-size: 14px; font-weight: 600; flex: 1; }
+  #header .sub { color: #94A3B8; font-size: 11px; }
+  #timer-display { font-family: var(--mono); font-size: 20px; font-weight: 700; color: white; min-width: 60px; text-align: center; }
+  #timer-display.warn { color: #FCA5A5; }
+  .hdr-btn { padding: 5px 14px; border: 1px solid #475569; border-radius: 5px; background: transparent; color: #CBD5E1; font-size: 11px; cursor: pointer; font-family: var(--sans); }
+  .hdr-btn:hover { background: #2D3F5E; }
+  .hdr-btn.teal { background: var(--teal); border-color: var(--teal); color: white; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    background: #0F1E35;
+    padding: 6px 20px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .prog-pip {
+    width: 28px; height: 6px; border-radius: 3px;
+    background: #2D3F5E;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .prog-pip.active { background: var(--teal); }
+  .prog-pip.done   { background: #4ADE80; }
+  .prog-pip.skip   { background: #475569; }
+  #prog-label { margin-left: auto; font-size: 11px; color: #64748B; font-family: var(--mono); }
+
+  /* ── MAIN CONTENT ── */
+  #main { flex: 1; overflow: hidden; display: flex; }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 220px;
+    background: var(--navy);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+  }
+  .side-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #94A3B8;
+    border: 1px solid transparent;
+    transition: all .15s;
+  }
+  .side-item:hover { background: #2D3F5E; color: white; }
+  .side-item.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .side-item.done   { border-color: #4ADE80; color: #4ADE80; }
+  .side-item.skip   { color: #475569; text-decoration: line-through; }
+  .side-num  { font-family: var(--mono); font-size: 13px; font-weight: 700; margin-right: 6px; }
+  .side-cat  { font-size: 9px; color: #475569; text-transform: uppercase; letter-spacing: .5px; display: block; margin-top: 2px; }
+  .pri-dot   { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+  .pri-HIGH   { background: #F87171; }
+  .pri-MEDIUM { background: #FCD34D; }
+  .pri-LOW    { background: #4ADE80; }
+
+  /* ── QUESTION AREA ── */
+  #qarea { flex: 1; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* TOPIC HEADER */
+  .q-topic {
+    background: var(--teal);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .q-num-badge {
+    background: rgba(0,0,0,.25);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pri-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: auto;
+  }
+  .pri-badge.HIGH   { background: var(--red-bg); color: var(--red-fg); }
+  .pri-badge.MEDIUM { background: var(--amb-bg); color: var(--amb-fg); }
+  .pri-badge.LOW    { background: var(--grn-bg); color: var(--grn-fg); }
+
+  /* ROW BOXES */
+  .row-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .row-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px 3px;
+  }
+  .row-content {
+    padding: 6px 12px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .say-box  .row-label { color: var(--navy); }
+  .say-box  .row-content { font-style: italic; color: var(--navy); }
+  .show-box .row-label { color: var(--blue-fg); background: var(--blue-bg); }
+  .show-box .row-content { font-family: var(--mono); font-size: 11px; color: var(--blue-fg); background: #EFF6FF; }
+  .ask-box  { background: var(--navy); }
+  .ask-box  .row-label { color: #94A3B8; }
+  .ask-box  .row-content { font-size: 13px; font-weight: 700; font-style: italic; color: white; }
+
+  /* YES/NO CARDS */
+  .yn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .yes-card, .no-card { border-radius: 7px; overflow: hidden; border: 1px solid; }
+  .yes-card { border-color: #86EFAC; }
+  .no-card  { border-color: #FCA5A5; }
+  .yn-hdr { padding: 6px 12px; font-size: 10px; font-weight: 700; color: white; letter-spacing: .5px; }
+  .yes-card .yn-hdr { background: var(--grn-fg); }
+  .no-card  .yn-hdr { background: var(--red-fg); }
+  .yn-body { padding: 8px 12px; font-size: 11px; line-height: 1.55; }
+  .yes-card .yn-body { background: #F0FDF4; color: #166534; }
+  .no-card  .yn-body  { background: #FFF1F2; color: var(--red-fg); }
+
+  /* BOTTOM ROW */
+  .btm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stuck-box .row-label { color: var(--amb-fg); background: var(--amb-bg); }
+  .parts-box .row-label { color: #7C3AED; background: #EDE9FE; }
+  .parts-box .row-content { font-family: var(--mono); font-size: 10px; color: #4C1D95; line-height: 1.7; }
+
+  /* SME ANSWER BOX */
+  .answer-box {
+    border: 2px solid var(--teal);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .answer-hdr {
+    background: var(--teal);
+    color: white;
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .answer-content {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    background: #F0FDFA;
+    line-height: 1.5;
+  }
+  .answer-note {
+    padding: 4px 12px 8px;
+    font-size: 11px;
+    color: var(--g500);
+    background: #F0FDFA;
+    font-style: italic;
+  }
+
+  /* STATUS BUTTONS */
+  .status-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 0 4px;
+    align-items: center;
+  }
+  .status-btn {
+    padding: 6px 18px;
+    border-radius: 6px;
+    border: 1px solid;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all .15s;
+  }
+  .btn-answered { border-color: var(--grn-fg); color: var(--grn-fg); background: white; }
+  .btn-answered:hover, .btn-answered.active { background: var(--grn-fg); color: white; }
+  .btn-pending  { border-color: var(--amb-fg); color: var(--amb-fg); background: white; }
+  .btn-pending:hover, .btn-pending.active  { background: var(--amb-fg); color: white; }
+  .btn-skip     { border-color: var(--g300);  color: var(--g500);  background: white; }
+  .btn-skip:hover, .btn-skip.active     { background: var(--g300);  color: var(--g700); }
+  .nav-next { margin-left: auto; padding: 6px 20px; background: var(--teal); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--sans); }
+  .nav-next:hover { background: #0A6557; }
+
+  /* ── SUMMARY PANEL ── */
+  #summary-panel {
+    display: none;
+    padding: 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sum-title { font-size: 18px; font-weight: 700; color: var(--navy); }
+  .sum-grid  { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .sum-card  { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .sum-num   { font-size: 32px; font-weight: 700; font-family: var(--mono); }
+  .sum-lbl   { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--g500); margin-top: 4px; }
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 12px; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .sum-table th { background: var(--g50); padding: 8px 12px; text-align: left; font-size: 10px; color: var(--g500); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .sum-table td { padding: 8px 12px; border-bottom: 1px solid var(--g100); vertical-align: top; }
+  .sum-table tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 7px; border-radius: 10px; }
+  .tag-answered { background: var(--grn-bg); color: var(--grn-fg); }
+  .tag-pending  { background: var(--amb-bg); color: var(--amb-fg); }
+  .tag-skip     { background: var(--g100); color: var(--g500); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--g300); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div>
+    <div class="h1" style="color:white;font-size:14px;font-weight:700">PLB Universal Robotic Labeler REV-D — SME Workshop</div>
+    <div class="sub">TC 2412 Product Configurator · 150% BOM Construction</div>
+  </div>
+  <div id="timer-display">0:00</div>
+  <button class="hdr-btn" onclick="toggleTimer()">▶ Start</button>
+  <button class="hdr-btn" onclick="resetTimer()">↺ Reset</button>
+  <button class="hdr-btn teal" onclick="showSummary()">Summary</button>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress-bar">
+  <div id="pips"></div>
+  <div id="prog-label">Q1 of 13</div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- SIDEBAR -->
+  <div id="sidebar" id="sidebar"></div>
+
+  <!-- QUESTION AREA -->
+  <div id="qarea"></div>
+
+  <!-- SUMMARY -->
+  <div id="summary-panel"></div>
+</div>
+
+<script>
+const Qs = [
+  {
+    num:1, cat:"Infeed", priority:"HIGH",
+    topic:"Infeed Module — Does Infeed = No exist?",
+    open:"Every BOM we have — 6FT EU, 32FT LH, 10FT LH — contains ASSY_KIT_INFEED at Level 2 inside the TLA. It has never been absent from any configuration we have seen.",
+    show:"Search A00021088 in 150% BOM → show it in all 3 source branches",
+    ask:"Does a PLB configuration exist where the machine ships without an infeed module?",
+    yes:"ASSY_KIT_INFEED carries Infeed = Yes variant condition in TC",
+    no:"ASSY_KIT_INFEED becomes COMMON — no variant condition needed",
+    stuck:"Ask: \"Has a customer ever ordered a PLB without the infeed conveyor?\"\nIf still unsure: park and move to Q2",
+    parts:"A00021088  ASSY_KIT_INFEED\nA00008364  100_ASSY_INFEED\nA00021094  ASSY_INFEED_PACKAGING\nA00008445  140_ASSY_INFEED_BASE\nA00008400  WELDMENT_FRAME_INFEED",
+    answer:"This is COMMON across all configurations. Answer is NO.",
+    note:"5 PENDING_SME parts resolved — ASSY_KIT_INFEED is COMMON"
+  },
+  {
+    num:2, cat:"Infeed", priority:"HIGH",
+    topic:"Infeed Extension — What drives inclusion?",
+    open:"ASSY_KIT_CONVEYOR_INFEED_EXTENSION sits at L1 in the 32FT LH BOM only — not in the 6FT EU. We need to confirm whether Length = 32Ft alone drives it, or whether Infeed = Yes is also required.",
+    show:"Search A00031581 in 150% BOM → show it in 32FT LH branch only\nConfirm it is absent from 6FT EU",
+    ask:"Is the infeed extension driven by Length = 32Ft alone — or only when BOTH Infeed = Yes AND Length = 32Ft are true?",
+    yes:"Formula stays: Length = 32Ft AND Infeed = Yes (current assignment)",
+    no:"Formula changes to: Length = 32Ft only",
+    stuck:"Point to the BOM evidence: \"It only appears in the 32FT BOM. Does the 6FT ever get an infeed extension?\"",
+    parts:"A00031581  ASSY_KIT_CONVEYOR_INFEED_EXTENSION\nA00029953  ASSY_CONVEYOR_INFEED_EXTENSION\nA00032894  ASSY_CONVEYOR_INFEED_EXTENSION_PACKAGING\nA00032762  BLOCK_ALIGNMENT_INFEED",
+    answer:"Formula = Infeed = Yes — or rename feature to InfeedExtension / InfeedExt.",
+    note:"Determines Rule 13 formula in Inclusion Rules"
+  },
+  {
+    num:3, cat:"Label Applicator", priority:"HIGH",
+    topic:"Label Applicator — Do both RH and LH mechanisms always ship?",
+    open:"Inside ASSY_KIT_LABEL_APPLICATOR, both MECHANISM_PRINT_RH and MECHANISM_PRINT_LH appear in every BOM — including the LH machine. This is the biggest open question — it affects 19 parts.",
+    show:"Search MECHANISM_PRINT_RH in 150% BOM → show it marked PENDING_SME in all 3 configs\nSearch MECHANISM_PRINT_LH → same",
+    ask:"Does the Label Applicator always ship with BOTH RH and LH print mechanisms — regardless of machine orientation?",
+    yes:"Both mechanisms are COMMON — no variant condition for all 19 Orientation-named parts",
+    no:"Each mechanism carries its own condition: MECHANISM_PRINT_RH → Orientation = RH, MECHANISM_PRINT_LH → Orientation = LH",
+    stuck:"Ask: \"Can a 6FT RH EU machine apply labels in LH orientation — or is the mechanism fixed at order time?\"\nIf unsure: escalate — this blocks 19 parts",
+    parts:"A00022307  MECHANISM_PRINT_RH\nA00022309  MECHANISM_PRINT_LH\nA00022312  POSITION_RULER_AND_TOGGLE_RH\nA00022313  POSITION_RULER_AND_TOGGLE_LH\nA00022322  SENSOR_MEDIA_RH\nA00022323  SENSOR_MEDIA_LH\n+ 13 more RH/LH parts",
+    answer:"No variant condition needed for all 19 parts.",
+    note:"19 PENDING_SME parts inside Label Applicator kit resolved — all COMMON"
+  },
+  {
+    num:4, cat:"Outfeed", priority:"MEDIUM",
+    topic:"Outfeed Sensor & Frame — Common or Intralox only?",
+    open:"ASSY_SENSOR_OUTFEED and WELDMENT_FRAME_OUTFEED appear in both the 6FT EU and 32FT LH BOMs. Both BOMs are Intralox — so we cannot tell from data alone if these parts are universal or Intralox-specific.",
+    show:"Search A00016758 → show in both EU and LH branches\nSearch A00025728 → same — both branches",
+    ask:"Are the outfeed sensor and outfeed frame weldment shared across ALL outfeed types — or specific to Intralox only?",
+    yes:"Both parts are COMMON — no variant condition",
+    no:"Both parts carry: Outfeed Type = Intralox",
+    stuck:"Ask each part separately: \"Does the SWM outfeed use the same sensor? The same frame weldment?\"",
+    parts:"A00016758  ASSY_SENSOR_OUTFEED (L3)\nA00025728  WELDMENT_FRAME_OUTFEED (L4)",
+    answer:"Safe to confirm Outfeed Type = Intralox at this point.",
+    note:"Determines if 2 parts are COMMON or carry Outfeed Type condition"
+  },
+  {
+    num:5, cat:"Outfeed", priority:"MEDIUM",
+    topic:"Outfeed Panel — Intralox specific or length driven?",
+    open:"We have three different outfeed panel Part IDs across the three BOMs. None have an outfeed type keyword in their name. The 6FT EU panel sits inside an INTRALOX kit but the 32FT and 10FT panels have no such parent.",
+    show:"Search ASSY_OUTFEED_PANEL in 150% BOM → show 3 different Part IDs:\nA00036378 (6FT EU) · A00034157 (32FT LH) · A00025617 (10FT LH)",
+    ask:"Is the outfeed panel driven by Outfeed Type — or by machine length?",
+    yes:"Panel carries: Outfeed Type = Intralox",
+    no:"Panel is COMMON across all outfeed types",
+    stuck:"Ask: \"If a 32FT SWM machine were ordered — would it use A00034157 or a completely different panel?\"",
+    parts:"A00034157  ASSY_OUTFEED_PANEL (LH version)\nA00036378  ASSY_OUTFEED_PANEL (EU Intralox version)",
+    answer:"Driven by Machine Length only.",
+    note:"Needed to finalise Inclusion Rules 15 and 16"
+  },
+  {
+    num:6, cat:"Length", priority:"MEDIUM",
+    topic:"5Ft Configuration — Does it exist in production?",
+    open:"While analysing the 32FT LH BOM we found a reference to an electrical panel part with 5FT in its name. This is the only evidence of a 5Ft machine and we need to know if it is real or historical.",
+    show:"Search A00032878 in 32FT LH BOM → show it buried in the electrical sub-assembly\nPart name: ASSY_ELECTRICAL_BOM_FOR_A00028494_PWR_PNL_5FT",
+    ask:"Does a 5Ft PLB configuration exist in production — and if yes, can you provide the BOM?",
+    yes:"Add 5Ft to Feature Dictionary as confirmed value and provide 5Ft BOM for upload",
+    no:"5Ft reference is historical — remove from Feature Dictionary pending values",
+    stuck:"Ask: \"Has a customer ever received a 5Ft PLB — or is this a concept never released?\"",
+    parts:"A00032878  ASSY_ELECTRICAL_BOM_FOR_A00028494_PWR_PNL_5FT",
+    answer:"No different PLB — 5Ft is a different infeed extension module, not a separate machine length.",
+    note:"BOM needed to confirm Length = 5Ft feature value"
+  },
+  {
+    num:7, cat:"Cabling", priority:"LOW",
+    topic:"EU Cable Harnesses — Where are they in the BOM?",
+    open:"The 32FT LH BOM has 25 explicit cable assemblies at Level 2. None appear in the 6FT EU BOM. Either the EU machine does not use inter-module cables — or they are structured differently.",
+    show:"Filter 150% BOM → LH only → scroll to L2 cable assemblies\nThen open 6FT EU tab → search ASSY_CABLE → show zero results",
+    ask:"Does the 6FT EU machine have inter-module cable harnesses — and if yes, where are they in the BOM?",
+    yes:"Locate EU cable harnesses in BOM and verify tagged COMMON or EU_RH",
+    no:"Confirm 6FT EU uses different architecture — 25 cables are Length = 32Ft specific",
+    stuck:"This is LOW priority — if uncertain after 2 minutes, park and continue",
+    parts:"A00021809  ASSY_CABLE_INTERFACE_UPSTREAM_CTR1\nA00025086  ASSY_CABLE_WEIGHING_CONVEYOR_MOTOR_PWR2\nA00025176  ASSY_CABLE_PRODUCT_CONVEYOR_PWR8\n+ 22 more ASSY_CABLE assemblies",
+    answer:"No differences. Two NA panels and EU panels with different internal components. No discrete inter-module harness. No formula change needed.",
+    note:"Informational — does not block BOM finalisation"
+  },
+  {
+    num:8, cat:"Cabling", priority:"MEDIUM",
+    topic:"Cable Drawings — NA only or available in all regions?",
+    open:"KIT_CABLE_DRAWINGS appears in both 32FT LH NA and 10FT LH NA BOMs. It is completely absent from the 6FT EU BOM. Our current formula says Region = NA — but we need to confirm orientation is also a driver.",
+    show:"Search A00028083 in 150% BOM → show it in both LH branches\nSwitch to 6FT EU tab → search A00028083 → zero results",
+    ask:"Is it a rule that cable drawings only ship with NA configurations — or does the EU machine also receive them?",
+    yes:"Add Formula: Region = EU for KIT_CABLE_DRAWINGS",
+    no:"Cable drawings are NA only — formula = Region = NA",
+    stuck:"Ask: \"If a customer orders a 6FT EU PLB — do they receive a cable drawing kit in the box?\"",
+    parts:"A00028083  KIT_CABLE_DRAWINGS_UNIVERSAL_ROBOTIC_LABELER_REV-D",
+    answer:"Same cable drawings for both NA and EU. Same Part ID. John will add to EU PLB as well. Variant formula should address EU.",
+    note:"Informational — does not block BOM finalisation"
+  },
+  {
+    num:9, cat:"Infeed Extension", priority:"HIGH",
+    topic:"Infeed Extension Formula — Confirmed Infeed = Yes regardless of length?",
+    open:"The 10FT BOM contains the same ASSY_KIT_CONVEYOR_INFEED_EXTENSION Part ID as the 32FT BOM. This proves the original formula Length = 32Ft AND Infeed = Yes was wrong — Length is not the driver.",
+    show:"Search A00031581 in 150% BOM → show it in BOTH 32FT LH and 10FT LH branches — NOT in 6FT EU",
+    ask:"Is ASSY_KIT_CONVEYOR_INFEED_EXTENSION present in ALL configurations where Infeed = Yes — regardless of machine length?",
+    yes:"Formula confirmed: Infeed = Yes (already updated in 150% BOM)",
+    no:"Provide the correct condition that drives this assembly",
+    stuck:"Show both branches: \"Same Part ID in 32FT and 10FT proves it is not Length driven. Can you confirm Infeed = Yes?\"",
+    parts:"A00031581  ASSY_KIT_CONVEYOR_INFEED_EXTENSION\nA00029953  ASSY_CONVEYOR_INFEED_EXTENSION\nA00032894  ASSY_CONVEYOR_INFEED_EXTENSION_PACKAGING\nA00032762  BLOCK_ALIGNMENT_INFEED",
+    answer:"Related to Q2. Formula already updated.",
+    note:"Formula already updated in 150% BOM — needs SME sign-off"
+  },
+  {
+    num:10, cat:"Outfeed Sensor", priority:"HIGH",
+    topic:"Outfeed Sensor — Why different Part ID in 10FT?",
+    open:"The 6FT EU and 32FT LH both use A00016758 for the outfeed sensor. The 10FT LH uses A00027265 — a completely different Part ID with the same name. We need to understand if this is Length driven or just a revision.",
+    show:"Search A00016758 in 150% BOM → show in EU and LH branches\nSearch A00027265 → show in 10FT branch only",
+    ask:"Does the 10FT machine use a different sensor because of Length = 10Ft — or is A00027265 simply a newer revision of A00016758?",
+    yes:"Length driven: A00016758 → 6FT + 32FT · A00027265 → 10FT only",
+    no:"Revision only — A00027265 is a direct replacement for A00016758",
+    stuck:"Ask: \"Would a newly built 32FT machine use A00027265 — or still A00016758?\"",
+    parts:"A00016758  ASSY_SENSOR_OUTFEED (6FT EU + 32FT LH)\nA00027265  ASSY_SENSOR_OUTFEED (10FT LH only)",
+    answer:"Related to Q2 which is already answered.",
+    note:"New finding from 3-BOM merge — determines formula for A00027265"
+  },
+  {
+    num:11, cat:"Outfeed Panel", priority:"HIGH",
+    topic:"Outfeed Panel — What drives 3 different Part IDs?",
+    open:"Every BOM has a different outfeed panel Part ID — yet all three are named ASSY_OUTFEED_PANEL. We cannot tell from names alone what drives the difference. And if SWM is added later, the formula could change completely.",
+    show:"Search ASSY_OUTFEED_PANEL in 150% BOM → show 3 different Part IDs each in a different source branch:\nA00036378 → 6FT EU · A00034157 → 32FT LH · A00025617 → 10FT LH",
+    ask:"What drives the 3 different outfeed panels — is it Length or Outfeed Type? If SWM were added, would it use one of these or a different one?",
+    yes:"Outfeed Type driven: A00036378 → Outfeed Type = Intralox, others need further SME input",
+    no:"Length driven: A00036378 → L=6Ft, A00034157 → L=32Ft, A00025617 → L=10Ft",
+    stuck:"Ask: \"Does a 32FT SWM machine use A00034157 — or a completely different panel?\"",
+    parts:"A00036378  ASSY_OUTFEED_PANEL (6FT EU)\nA00034157  ASSY_OUTFEED_PANEL (32FT LH)\nA00025617  ASSY_OUTFEED_PANEL (10FT LH)",
+    answer:"Outfeed type AND length — when SWM is added both will matter.",
+    note:"Critical — determines variant formula for all 3 outfeed panels"
+  },
+  {
+    num:12, cat:"Outfeed Guide", priority:"MEDIUM",
+    topic:"10FT Guide Assembly — Length only or Length AND Orientation?",
+    open:"The 10FT BOM has a unique guide assembly ASSY_GUIDE_10FT_LH not present in 6FT or 32FT. The 32FT has its own equivalent ASSY_GUIDES_32FT_LH. The 6FT has no guide. The LH suffix suggests orientation matters.",
+    show:"Search A00033707 in 150% BOM → show in 10FT branch only\nSearch A00032586 → show ASSY_GUIDES_32FT_LH in 32FT branch only",
+    ask:"Is ASSY_GUIDE_10FT_LH driven by Length = 10Ft AND Orientation = LH — or is Length = 10Ft alone sufficient?",
+    yes:"Formula: Length = 10Ft AND Orientation = LH (matches 32FT equivalent pattern)",
+    no:"Formula: Length = 10Ft only — LH suffix is descriptive only",
+    stuck:"Ask: \"Does a 32FT RH guide exist? Does a 10FT RH guide exist?\" — No RH version → Length only",
+    parts:"A00033707  ASSY_GUIDE_10FT_LH\nA00032586  ASSY_GUIDES_32FT_LH (32FT equivalent)\nA00032600  SIDEGUIDE_OUTFEED (10FT unique)",
+    answer:"Length, Orientation AND Outfeed Type if SWM is added.",
+    note:"Add to Inclusion Rules — formula to be confirmed"
+  },
+  {
+    num:13, cat:"Cabling", priority:"MEDIUM",
+    topic:"Cable Drawings Formula — Region = NA AND Orientation = LH?",
+    open:"KIT_CABLE_DRAWINGS appears in both 32FT LH and 10FT LH with the same Part ID. The original formula Length = 32Ft AND Region = NA is wrong — Length is not the driver. Q8 confirmed the Region piece.",
+    show:"Search A00028083 → show it in BOTH LH branches — same Part ID in 32FT and 10FT",
+    ask:"Is KIT_CABLE_DRAWINGS driven by Region = NA AND Orientation = LH — shared across all NA LH lengths?",
+    yes:"Formula updated to: Region = NA AND Orientation = LH (not Length specific)",
+    no:"Separate cable drawing kits per length — provide correct Part IDs per length",
+    stuck:"Reference Q8: \"In Q8 we confirmed Region. Now I need to know — does an RH NA machine also get cable drawings?\"",
+    parts:"A00028083  KIT_CABLE_DRAWINGS_UNIVERSAL_ROBOTIC_LABELER_REV-D\n(Present in 32FT LH and 10FT LH — same Part ID)",
+    answer:"Answered in Q8.",
+    note:"Update Inclusion Rule 15 formula to Region = NA AND Orientation = LH"
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────
+const state = {
+  current: 0,
+  status: Array(13).fill(''),   // '' | 'answered' | 'pending' | 'skip'
+  timerSec: 0,
+  timerRunning: false,
+  timerInt: null
+};
+
+// ── TIMER ──────────────────────────────────────────────────────
+function toggleTimer() {
+  if (state.timerRunning) {
+    clearInterval(state.timerInt);
+    state.timerRunning = false;
+    document.querySelector('#header .hdr-btn').textContent = '▶ Start';
+  } else {
+    state.timerInt = setInterval(() => {
+      state.timerSec++;
+      updateTimerDisplay();
+    }, 1000);
+    state.timerRunning = true;
+    document.querySelector('#header .hdr-btn').textContent = '⏸ Pause';
+  }
+}
+function resetTimer() {
+  clearInterval(state.timerInt);
+  state.timerRunning = false;
+  state.timerSec = 0;
+  document.querySelector('#header .hdr-btn').textContent = '▶ Start';
+  updateTimerDisplay();
+}
+function updateTimerDisplay() {
+  const m = Math.floor(state.timerSec / 60);
+  const s = state.timerSec % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = m + ':' + String(s).padStart(2,'0');
+  el.className = state.timerSec > 3600 ? 'timer-display warn' : 'timer-display';
+}
+
+// ── PROGRESS PIPS ─────────────────────────────────────────────
+function buildPips() {
+  const pips = document.getElementById('pips');
+  pips.style.display = 'flex';
+  pips.style.gap = '4px';
+  pips.innerHTML = '';
+  Qs.forEach((q,i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-pip' +
+      (i === state.current ? ' active' : '') +
+      (state.status[i] === 'answered' ? ' done' : '') +
+      (state.status[i] === 'skip' ? ' skip' : '');
+    d.title = 'Q' + q.num + ' — ' + q.topic;
+    d.onclick = () => goTo(i);
+    pips.appendChild(d);
+  });
+  document.getElementById('prog-label').textContent =
+    'Q' + Qs[state.current].num + ' of 13  ·  ' +
+    state.status.filter(s=>s==='answered').length + ' answered';
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────
+function buildSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = '';
+  Qs.forEach((q,i) => {
+    const d = document.createElement('div');
+    d.className = 'side-item' +
+      (i === state.current ? ' active' : '') +
+      (state.status[i] === 'answered' ? ' done' : '') +
+      (state.status[i] === 'skip' ? ' skip' : '');
+    d.innerHTML =
+      '<span class="pri-dot pri-' + q.priority + '"></span>' +
+      '<span class="side-num">Q' + q.num + '</span>' +
+      q.cat +
+      '<span class="side-cat">' + q.priority + '</span>';
+    d.onclick = () => goTo(i);
+    sb.appendChild(d);
+  });
+}
+
+// ── RENDER QUESTION ───────────────────────────────────────────
+function renderQuestion() {
+  document.getElementById('summary-panel').style.display = 'none';
+  document.getElementById('qarea').style.display = 'flex';
+
+  const q = Qs[state.current];
+  const qa = document.getElementById('qarea');
+  qa.innerHTML = '';
+
+  // Topic header
+  qa.innerHTML += `
+    <div class="q-topic">
+      <span class="q-num-badge">Q${q.num}</span>
+      ${q.topic}
+      <span class="pri-badge ${q.priority}">${q.priority}</span>
+    </div>`;
+
+  // SAY TO OPEN
+  qa.innerHTML += `<div class="row-box say-box">
+    <div class="row-label">SAY TO OPEN</div>
+    <div class="row-content">${q.open}</div>
+  </div>`;
+
+  // SHOW
+  qa.innerHTML += `<div class="row-box show-box">
+    <div class="row-label">SHOW ON BOM VIEWER</div>
+    <div class="row-content">${q.show.replace(/\n/g,'<br>')}</div>
+  </div>`;
+
+  // ASK
+  qa.innerHTML += `<div class="row-box ask-box">
+    <div class="row-label">ASK EXACTLY THIS</div>
+    <div class="row-content">"${q.ask}"</div>
+  </div>`;
+
+  // YES / NO
+  qa.innerHTML += `<div class="yn-row">
+    <div class="yes-card">
+      <div class="yn-hdr">✓  LISTEN FOR — YES</div>
+      <div class="yn-body">${q.yes}</div>
+    </div>
+    <div class="no-card">
+      <div class="yn-hdr">✗  LISTEN FOR — NO</div>
+      <div class="yn-body">${q.no}</div>
+    </div>
+  </div>`;
+
+  // IF STUCK + PARTS
+  qa.innerHTML += `<div class="btm-row">
+    <div class="row-box stuck-box">
+      <div class="row-label">IF STUCK</div>
+      <div class="row-content">${q.stuck.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div class="row-box parts-box">
+      <div class="row-label">PART IDs</div>
+      <div class="row-content">${q.parts.replace(/\n/g,'<br>')}</div>
+    </div>
+  </div>`;
+
+  // SME ANSWER
+  qa.innerHTML += `<div class="answer-box">
+    <div class="answer-hdr">
+      <span>✅</span> SME ANSWER — CONFIRMED IN SESSION
+    </div>
+    <div class="answer-content">${q.answer}</div>
+    <div class="answer-note">${q.note}</div>
+  </div>`;
+
+  // Status + Nav
+  const st = state.status[state.current];
+  qa.innerHTML += `<div class="status-row">
+    <button class="status-btn btn-answered ${st==='answered'?'active':''}" onclick="setStatus('answered')">✓ Answered</button>
+    <button class="status-btn btn-pending  ${st==='pending' ?'active':''}" onclick="setStatus('pending')">⏸ Pending</button>
+    <button class="status-btn btn-skip     ${st==='skip'    ?'active':''}" onclick="setStatus('skip')">— Skip</button>
+    ${state.current < 12
+      ? `<button class="nav-next" onclick="goTo(${state.current+1})">Next Q${Qs[state.current+1].num} →</button>`
+      : `<button class="nav-next" onclick="showSummary()">Summary ✓</button>`}
+  </div>`;
+
+  buildPips();
+  buildSidebar();
+  qa.scrollTop = 0;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function goTo(i) {
+  state.current = i;
+  renderQuestion();
+}
+function setStatus(s) {
+  state.status[state.current] = s;
+  renderQuestion();
+}
+
+// ── SUMMARY ───────────────────────────────────────────────────
+function showSummary() {
+  document.getElementById('qarea').style.display = 'none';
+  const sp = document.getElementById('summary-panel');
+  sp.style.display = 'flex';
+  const answered = state.status.filter(s=>s==='answered').length;
+  const pending  = state.status.filter(s=>s==='pending').length;
+  const skipped  = state.status.filter(s=>s==='skip').length;
+  const open     = 13 - answered - pending - skipped;
+
+  sp.innerHTML = `
+    <div class="sum-title">SME Workshop — Session Summary</div>
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-num" style="color:var(--grn-fg)">${answered}</div><div class="sum-lbl">Answered</div></div>
+      <div class="sum-card"><div class="sum-num" style="color:var(--amb-fg)">${pending}</div><div class="sum-lbl">Pending</div></div>
+      <div class="sum-card"><div class="sum-num" style="color:var(--g500)">${open}</div><div class="sum-lbl">Not Started</div></div>
+    </div>
+    <table class="sum-table">
+      <thead><tr><th>#</th><th>Category</th><th>Priority</th><th>Topic</th><th>SME Answer</th><th>Status</th></tr></thead>
+      <tbody>
+        ${Qs.map((q,i) => `<tr>
+          <td style="font-family:var(--mono);font-weight:700">Q${q.num}</td>
+          <td>${q.cat}</td>
+          <td><span class="tag tag-${q.priority.toLowerCase()}" style="background:var(--${q.priority==='HIGH'?'red':'MEDIUM'===q.priority?'amb':'grn'}-bg);color:var(--${q.priority==='HIGH'?'red':'MEDIUM'===q.priority?'amb':'grn'}-fg)">${q.priority}</span></td>
+          <td style="max-width:200px">${q.topic}</td>
+          <td style="max-width:200px;font-size:11px;color:var(--g500)">${q.answer}</td>
+          <td><span class="tag ${state.status[i]==='answered'?'tag-answered':state.status[i]==='pending'?'tag-pending':'tag-skip'}">${state.status[i]||'open'}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    <div style="display:flex;gap:8px">
+      <button class="nav-next" onclick="goTo(0)">← Back to Questions</button>
+    </div>
+  `;
+  buildPips();
+  buildSidebar();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+renderQuestion();
+</script>
+</body>
+</html>

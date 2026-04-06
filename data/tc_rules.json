@@ -1,0 +1,419 @@
+{
+  "inclusion": [
+    {
+      "id": "IR-001",
+      "priority": "HIGH",
+      "subject_id": "A00028615",
+      "subject": "PLB_UNIVERSAL_ROBOTIC_LABELER_REV-D_6FT_RH_EU",
+      "condition": "Region = EU AND Orientation = RH AND Length = 6Ft",
+      "families_used": [
+        "Region",
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Source BOM",
+      "notes": "TLA for 6FT RH EU configuration"
+    },
+    {
+      "id": "IR-002",
+      "priority": "HIGH",
+      "subject_id": "A00024724",
+      "subject": "PLB_UNIVERSAL_ROBOTIC_LABELER_REV-D_32FT_LH_NA",
+      "condition": "Region = NA AND Orientation = LH AND Length = 32Ft",
+      "families_used": [
+        "Region",
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "32FT LH BOM",
+      "sme_source": "Source BOM",
+      "notes": "TLA for 32FT LH NA configuration"
+    },
+    {
+      "id": "IR-003",
+      "priority": "HIGH",
+      "subject_id": "A00027124",
+      "subject": "PLB_UNIVERSAL_ROBOTIC_LABELER_REV-D_10FT_LH_NA",
+      "condition": "Region = NA AND Orientation = LH AND Length = 10Ft",
+      "families_used": [
+        "Region",
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "10FT LH BOM",
+      "sme_source": "Q15 confirmed",
+      "notes": "TLA for 10FT LH NA configuration"
+    },
+    {
+      "id": "IR-004",
+      "priority": "HIGH",
+      "subject_id": "A00028618",
+      "subject": "TLA_UNIVERSAL_ROBOTIC_LABELER_REV-D_RH_EU",
+      "condition": "Region = EU AND Orientation = RH",
+      "families_used": [
+        "Region",
+        "Orientation"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Source BOM",
+      "notes": "EU RH TLA sub-assembly"
+    },
+    {
+      "id": "IR-005",
+      "priority": "HIGH",
+      "subject_id": "A00012904",
+      "subject": "TLA_UNIVERSAL_ROBOTIC_LABELER_REV-D_LH",
+      "condition": "Orientation = LH",
+      "families_used": [
+        "Orientation"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Source BOM",
+      "notes": "LH TLA \u2014 shared across all LH lengths"
+    },
+    {
+      "id": "IR-006",
+      "priority": "HIGH",
+      "subject_id": "A00033459",
+      "subject": "ASSY_KIT_OUTFEED_6FT_RH_INTRALOX",
+      "condition": "Orientation = RH AND Length = 6Ft AND Outfeed Type = Intralox",
+      "families_used": [
+        "Orientation",
+        "Length",
+        "Outfeed Type"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Q4 + Source BOM",
+      "notes": "6FT RH Intralox outfeed kit"
+    },
+    {
+      "id": "IR-007",
+      "priority": "HIGH",
+      "subject_id": "A00023793",
+      "subject": "ASSY_KIT_OUTFEED_32FT_LH",
+      "condition": "Orientation = LH AND Length = 32Ft",
+      "families_used": [
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "32FT LH BOM",
+      "sme_source": "Source BOM",
+      "notes": "32FT LH outfeed kit"
+    },
+    {
+      "id": "IR-008",
+      "priority": "HIGH",
+      "subject_id": "A00027433",
+      "subject": "ASSY_KIT_OUTFEED_10FT_LH",
+      "condition": "Orientation = LH AND Length = 10Ft",
+      "families_used": [
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "10FT LH BOM",
+      "sme_source": "Source BOM",
+      "notes": "10FT LH outfeed kit"
+    },
+    {
+      "id": "IR-009",
+      "priority": "HIGH",
+      "subject_id": "A00036378",
+      "subject": "ASSY_OUTFEED_PANEL (6FT)",
+      "condition": "Length = 6Ft",
+      "families_used": [
+        "Length"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Q5",
+      "notes": "Outfeed panel \u2014 Length driven per Q5 SME answer"
+    },
+    {
+      "id": "IR-010",
+      "priority": "HIGH",
+      "subject_id": "A00034157",
+      "subject": "ASSY_OUTFEED_PANEL (32FT)",
+      "condition": "Length = 32Ft",
+      "families_used": [
+        "Length"
+      ],
+      "bom_evidence": "32FT LH BOM",
+      "sme_source": "Q5",
+      "notes": "Outfeed panel \u2014 Length driven per Q5 SME answer"
+    },
+    {
+      "id": "IR-011",
+      "priority": "HIGH",
+      "subject_id": "A00025617",
+      "subject": "ASSY_OUTFEED_PANEL (10FT)",
+      "condition": "Length = 10Ft",
+      "families_used": [
+        "Length"
+      ],
+      "bom_evidence": "10FT LH BOM",
+      "sme_source": "Q5",
+      "notes": "Outfeed panel \u2014 Length driven per Q5 SME answer"
+    },
+    {
+      "id": "IR-012",
+      "priority": "MEDIUM",
+      "subject_id": "A00028619",
+      "subject": "ASSY_KIT_LATENCY_TUNNEL_EU",
+      "condition": "Region = EU",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Source BOM",
+      "notes": "EU specific latency tunnel kit"
+    },
+    {
+      "id": "IR-013",
+      "priority": "MEDIUM",
+      "subject_id": "A00021079",
+      "subject": "ASSY_KIT_LATENCY_TUNNEL",
+      "condition": "Region = NA",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Source BOM",
+      "notes": "NA latency tunnel kit"
+    },
+    {
+      "id": "IR-014",
+      "priority": "MEDIUM",
+      "subject_id": "A00030478",
+      "subject": "KIT_CONSUMABLES_EU",
+      "condition": "Region = EU",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Source BOM",
+      "notes": "EU consumables kit"
+    },
+    {
+      "id": "IR-015",
+      "priority": "MEDIUM",
+      "subject_id": "A00030474",
+      "subject": "KIT_CONSUMABLES_NA",
+      "condition": "Region = NA",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Source BOM",
+      "notes": "NA consumables kit"
+    },
+    {
+      "id": "IR-016",
+      "priority": "MEDIUM",
+      "subject_id": "A00034338",
+      "subject": "RSPL_EU",
+      "condition": "Region = EU",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "6FT EU BOM",
+      "sme_source": "Source BOM",
+      "notes": "EU spare parts list"
+    },
+    {
+      "id": "IR-017",
+      "priority": "MEDIUM",
+      "subject_id": "A00023255",
+      "subject": "RSPL_NA",
+      "condition": "Region = NA",
+      "families_used": [
+        "Region"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Source BOM",
+      "notes": "NA spare parts list"
+    },
+    {
+      "id": "IR-018",
+      "priority": "MEDIUM",
+      "subject_id": "A00028083",
+      "subject": "KIT_CABLE_DRAWINGS",
+      "condition": "Region = NA AND Orientation = LH",
+      "families_used": [
+        "Region",
+        "Orientation"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Q8/Q13 confirmed",
+      "notes": "Cable drawings \u2014 same Part ID in both LH lengths. Q8: EU formula to be added separately by John"
+    },
+    {
+      "id": "IR-019",
+      "priority": "HIGH",
+      "subject_id": "A00031581",
+      "subject": "ASSY_KIT_CONVEYOR_INFEED_EXTENSION (+ 3 sub-parts)",
+      "condition": "Infeed = Yes",
+      "families_used": [
+        "Infeed"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Q2/Q9 confirmed",
+      "notes": "Infeed extension \u2014 Infeed=Yes regardless of length. Also covers A00029953, A00032894, A00032762"
+    },
+    {
+      "id": "IR-020",
+      "priority": "HIGH",
+      "subject_id": "A00016426",
+      "subject": "ASSY_ROLLER_POP_OUT_LH",
+      "condition": "Orientation = LH",
+      "families_used": [
+        "Orientation"
+      ],
+      "bom_evidence": "32FT LH + 10FT LH",
+      "sme_source": "Source BOM",
+      "notes": "LH specific roller pop-out assembly"
+    },
+    {
+      "id": "IR-021",
+      "priority": "MEDIUM",
+      "subject_id": "A00033707",
+      "subject": "ASSY_GUIDE_10FT_LH (+ A00032600 SIDEGUIDE_OUTFEED)",
+      "condition": "Orientation = LH AND Length = 10Ft",
+      "families_used": [
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "10FT LH BOM",
+      "sme_source": "Q12 confirmed",
+      "notes": "Q12: Length AND Orientation (AND Outfeed Type when SWM added)"
+    },
+    {
+      "id": "IR-022",
+      "priority": "MEDIUM",
+      "subject_id": "A00032586",
+      "subject": "ASSY_GUIDES_32FT_LH",
+      "condition": "Orientation = LH AND Length = 32Ft",
+      "families_used": [
+        "Orientation",
+        "Length"
+      ],
+      "bom_evidence": "32FT LH BOM",
+      "sme_source": "Q12 confirmed",
+      "notes": "32FT equivalent of 10FT guide \u2014 same pattern"
+    },
+    {
+      "id": "IR-023",
+      "priority": "PENDING",
+      "subject_id": "TBD",
+      "subject": "SWM Outfeed Kit (Part ID TBD)",
+      "condition": "Outfeed Type = SWM",
+      "families_used": [
+        "Outfeed Type"
+      ],
+      "bom_evidence": "NO BOM \u2014 PENDING",
+      "sme_source": "Q5/Q11",
+      "notes": "PENDING: SWM BOM required before this rule can be created"
+    }
+  ],
+  "exclusion": [
+    {
+      "id": "ER-001",
+      "severity": "Error",
+      "subject": "Orientation = RH",
+      "subject_family": "Orientation",
+      "condition": "Region = NA",
+      "condition_family": "Region",
+      "sme_source": "Source BOM",
+      "notes": "No NA RH BOM \u2014 RH is EU only in current product range"
+    },
+    {
+      "id": "ER-002",
+      "severity": "Error",
+      "subject": "Orientation = LH",
+      "subject_family": "Orientation",
+      "condition": "Region = EU",
+      "condition_family": "Region",
+      "sme_source": "Source BOM",
+      "notes": "No EU LH BOM \u2014 LH is NA only in current product range"
+    },
+    {
+      "id": "ER-003",
+      "severity": "Error",
+      "subject": "Length = 6Ft",
+      "subject_family": "Length",
+      "condition": "Region = NA",
+      "condition_family": "Region",
+      "sme_source": "Source BOM",
+      "notes": "No NA 6Ft BOM \u2014 6Ft is EU only"
+    },
+    {
+      "id": "ER-004",
+      "severity": "Error",
+      "subject": "Length = 32Ft",
+      "subject_family": "Length",
+      "condition": "Region = EU",
+      "condition_family": "Region",
+      "sme_source": "Source BOM",
+      "notes": "No EU 32Ft BOM \u2014 32Ft is NA only"
+    },
+    {
+      "id": "ER-005",
+      "severity": "Error",
+      "subject": "Length = 10Ft",
+      "subject_family": "Length",
+      "condition": "Region = EU",
+      "condition_family": "Region",
+      "sme_source": "Q15 confirmed",
+      "notes": "No EU 10Ft BOM \u2014 10Ft is NA only"
+    },
+    {
+      "id": "ER-006",
+      "severity": "Error",
+      "subject": "Length = 6Ft",
+      "subject_family": "Length",
+      "condition": "Orientation = LH",
+      "condition_family": "Orientation",
+      "sme_source": "Source BOM",
+      "notes": "No LH 6Ft BOM \u2014 6Ft machines are RH only"
+    },
+    {
+      "id": "ER-007",
+      "severity": "Error",
+      "subject": "Length = 32Ft",
+      "subject_family": "Length",
+      "condition": "Orientation = RH",
+      "condition_family": "Orientation",
+      "sme_source": "Source BOM",
+      "notes": "No RH 32Ft BOM exists"
+    },
+    {
+      "id": "ER-008",
+      "severity": "Error",
+      "subject": "Length = 10Ft",
+      "subject_family": "Length",
+      "condition": "Orientation = RH",
+      "condition_family": "Orientation",
+      "sme_source": "Source BOM",
+      "notes": "No RH 10Ft BOM exists"
+    },
+    {
+      "id": "ER-009",
+      "severity": "Error",
+      "subject": "Length = 5Ft",
+      "subject_family": "Length",
+      "condition": "Always \u2014 never valid",
+      "condition_family": "",
+      "sme_source": "Q6 confirmed",
+      "notes": "Q6: 5Ft is NOT a machine length \u2014 it is an infeed extension module. Do not create this feature in TC."
+    },
+    {
+      "id": "ER-010",
+      "severity": "Warning",
+      "subject": "Outfeed Type = SWM",
+      "subject_family": "Outfeed Type",
+      "condition": "Region = EU",
+      "condition_family": "Region",
+      "sme_source": "Q4/Q5",
+      "notes": "No EU SWM BOM \u2014 warn if SWM selected with EU region"
+    }
+  ]
+}
